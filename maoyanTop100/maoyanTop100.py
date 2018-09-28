@@ -44,8 +44,20 @@ def parse_one_page(html):
         print(releasetime_text)
         print('---------------------------------------')
 
-        data = {name: name, rank: rank, score: score, actors_text: actors_text, releasetime_text: releasetime_text}
+        data = {'name': name, 'rank': rank, 'score': score, 'actors_text': actors_text,
+                'releasetime_text': releasetime_text}
         data_list.append(data)
+
+
+def write_data(datas):
+    with open('top100.txt', 'w', encoding='utf-8') as file:
+        for item in datas:
+            file.write(item['name']+'\n')
+            file.write(item['rank']+'\n')
+            file.write(item['score']+'\n')
+            file.write(item['actors_text']+'\n')
+            file.write(item['releasetime_text']+'\n')
+            file.write('---------------------------------------------------------------''\n')
 
 
 def main():
@@ -54,6 +66,8 @@ def main():
         html = get_one_page(url)
         parse_one_page(html)
         time.sleep(1)
+
+    write_data(data_list)
 
 
 main()
