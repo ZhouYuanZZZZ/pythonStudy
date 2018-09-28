@@ -1,4 +1,12 @@
 import requests
+import pyquery
+import re
+import time
+
+releasetime_re = '(\d{4}-\d{2}-\d{2}){1}|(\d){4}'
+actors_re = '(主演：)(.+)'
+
+data_list = []
 
 
 def get_one_page(url):
@@ -13,10 +21,39 @@ def get_one_page(url):
         return None
 
 
+def parse_one_page(html):
+    doc = pyquery.PyQuery(html)
+
+    dd = doc('dd')
+
+    for item in dd.items():
+        name = item('a:first').attr('title')
+        rank = item('i:first').text()
+        score = item('p[class=score]').eq(0).text() + item('p[class=score]').eq(1).text()
+        actors = item('p[class=star]').text()
+
+        actors_text = re.search(actors_re, actors).group(2)
+
+        releasetime = item('p[class=releasetime]').text()
+        releasetime_text = re.search(releasetime_re, releasetime).group()
+
+        print(name)
+        print(rank)
+        print(score)
+        print(actors_text)
+        print(releasetime_text)
+        print('---------------------------------------')
+
+        data = {name: name, rank: rank, score: score, actors_text: actors_text, releasetime_text: releasetime_text}
+        data_list.append(data)
+
+
 def main():
-    url = 'http://maoyan.com/board/4'
-    html = get_one_page(url)
-    print(html)
+    for i in range(10):
+        url = 'http://maoyan.com/board/4?offset=' + str(i * 10)
+        html = get_one_page(url)
+        parse_one_page(html)
+        time.sleep(1)
 
 
 main()
