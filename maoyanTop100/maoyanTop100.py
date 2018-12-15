@@ -2,6 +2,7 @@ import requests
 import pyquery
 import re
 import time
+import pymysql
 
 releasetime_re = '(\d{4}-\d{2}-\d{2}){1}|(\d){4}'
 actors_re = '(主演：)(.+)'
@@ -49,7 +50,7 @@ def parse_one_page(html):
         data_list.append(data)
 
 
-def write_data(datas):
+def write_data_txt(datas):
     with open('top100.txt', 'w', encoding='utf-8') as file:
         for item in datas:
             file.write(item['name']+'\n')
@@ -59,6 +60,14 @@ def write_data(datas):
             file.write(item['releasetime_text']+'\n')
             file.write('---------------------------------------------------------------''\n')
 
+def write_data_mysql(datas):
+    for item in datas:
+
+def create_table():
+    db_conn = pymysql.connect(host='localhost', user='root', passwd='root',database = 'new_futures', port = 3306, charset = 'utf8')
+
+
+
 
 def main():
     for i in range(10):
@@ -67,7 +76,7 @@ def main():
         parse_one_page(html)
         time.sleep(1)
 
-    write_data(data_list)
+    write_data_mysql(data_list)
 
 
 main()
