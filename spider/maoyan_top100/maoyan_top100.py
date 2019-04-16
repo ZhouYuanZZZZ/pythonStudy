@@ -1,8 +1,7 @@
 import requests
-import pyquery
 import re
 import time
-import pymysql
+from bs4 import BeautifulSoup
 
 releasetime_re = '(\d{4}-\d{2}-\d{2}){1}|(\d){4}'
 actors_re = '(主演：)(.+)'
@@ -23,9 +22,9 @@ def get_one_page(url):
 
 
 def parse_one_page(html):
-    doc = pyquery.PyQuery(html)
+    # doc = pyquery.PyQuery(html)
 
-    dd = doc('dd')
+    # dd = doc('dd')
 
     for item in dd.items():
         name = item('a:first').attr('title')
@@ -53,20 +52,24 @@ def parse_one_page(html):
 def write_data_txt(datas):
     with open('top100.txt', 'w', encoding='utf-8') as file:
         for item in datas:
-            file.write(item['name']+'\n')
-            file.write(item['rank']+'\n')
-            file.write(item['score']+'\n')
-            file.write(item['actors_text']+'\n')
-            file.write(item['releasetime_text']+'\n')
+            file.write(item['name'] + '\n')
+            file.write(item['rank'] + '\n')
+            file.write(item['score'] + '\n')
+            file.write(item['actors_text'] + '\n')
+            file.write(item['releasetime_text'] + '\n')
             file.write('---------------------------------------------------------------''\n')
+
 
 def write_data_mysql(datas):
     for item in datas:
+        print(0)
+
 
 def create_table():
-    db_conn = pymysql.connect(host='localhost', user='root', passwd='root',database = 'new_futures', port = 3306, charset = 'utf8')
+    print(0)
 
 
+# db_conn = pymysql.connect(host='localhost', user='root', passwd='root',database = 'new_futures', port = 3306, charset = 'utf8')
 
 
 def main():
@@ -79,4 +82,22 @@ def main():
     write_data_mysql(data_list)
 
 
-main()
+def parse_item(dd):
+    item_name = dd.select_one("img:nth-child(2)").attrs["alt"]
+    print(item_name)
+
+
+def test0():
+
+    url = 'http://maoyan.com/board/4?offset=' + str(0 * 10)
+    html = get_one_page(url)
+
+    html = BeautifulSoup(html, "lxml")
+    html = html.select("dd")
+
+    for item in html:
+        parse_item(item)
+
+
+if __name__ == '__main__':
+    test0()
