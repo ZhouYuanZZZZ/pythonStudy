@@ -84,11 +84,27 @@ def main():
 
 def parse_item(dd):
     item_name = dd.select_one("img:nth-child(2)").attrs["alt"]
-    print(item_name)
+
+    star = dd.select_one("p.star").get_text()
+    star = star.strip()
+    star = star[3:]
+
+    issue_time = dd.select_one("p.releasetime").get_text().strip()
+    m = re.search(releasetime_re, issue_time)
+    releasetime = m.group()
+    if (len(releasetime) == 4):
+        releasetime = releasetime + "-01-01"
+
+    score = dd.select_one("i.integer").get_text().strip() + dd.select_one("i.fraction").get_text().strip()
+
+    rank = dd.select_one("i.board-index").get_text().strip()
+
+    map = {"item_name": item_name, "star": star, "releasetime": releasetime, "score": float(score), "rank": int(rank)}
+
+    return map
 
 
 def test0():
-
     url = 'http://maoyan.com/board/4?offset=' + str(0 * 10)
     html = get_one_page(url)
 
@@ -96,7 +112,8 @@ def test0():
     html = html.select("dd")
 
     for item in html:
-        parse_item(item)
+        map = parse_item(item)
+        print(map)
 
 
 if __name__ == '__main__':
