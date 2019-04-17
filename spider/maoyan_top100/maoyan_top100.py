@@ -1,7 +1,9 @@
 import requests
 import re
 import time
+import os
 from bs4 import BeautifulSoup
+
 
 releasetime_re = '(\d{4}-\d{2}-\d{2}){1}|(\d){4}'
 actors_re = '(主演：)(.+)'
@@ -22,41 +24,22 @@ def get_one_page(url):
 
 
 def parse_one_page(html):
-    # doc = pyquery.PyQuery(html)
+    html = BeautifulSoup(html, "lxml")
+    html = html.select("dd")
 
-    # dd = doc('dd')
-
-    for item in dd.items():
-        name = item('a:first').attr('title')
-        rank = item('i:first').text()
-        score = item('p[class=score]').eq(0).text() + item('p[class=score]').eq(1).text()
-        actors = item('p[class=star]').text()
-
-        actors_text = re.search(actors_re, actors).group(2)
-
-        releasetime = item('p[class=releasetime]').text()
-        releasetime_text = re.search(releasetime_re, releasetime).group()
-
-        print(name)
-        print(rank)
-        print(score)
-        print(actors_text)
-        print(releasetime_text)
-        print('---------------------------------------')
-
-        data = {'name': name, 'rank': rank, 'score': score, 'actors_text': actors_text,
-                'releasetime_text': releasetime_text}
-        data_list.append(data)
+    for item in html:
+        map = parse_item(item)
+        data_list.append(map)
 
 
 def write_data_txt(datas):
     with open('top100.txt', 'w', encoding='utf-8') as file:
         for item in datas:
-            file.write(item['name'] + '\n')
-            file.write(item['rank'] + '\n')
-            file.write(item['score'] + '\n')
-            file.write(item['actors_text'] + '\n')
-            file.write(item['releasetime_text'] + '\n')
+            file.write(item['item_name'] + os.linesep)
+            file.write(item['star'] + os.linesep)
+            file.write(str(item['score']) + os.linesep)
+            file.write(str(item['rank']) + os.linesep)
+            file.write(item['releasetime'] + os.linesep)
             file.write('---------------------------------------------------------------''\n')
 
 
@@ -67,9 +50,6 @@ def write_data_mysql(datas):
 
 def create_table():
     print(0)
-
-
-# db_conn = pymysql.connect(host='localhost', user='root', passwd='root',database = 'new_futures', port = 3306, charset = 'utf8')
 
 
 def main():
@@ -99,21 +79,26 @@ def parse_item(dd):
 
     rank = dd.select_one("i.board-index").get_text().strip()
 
-    map = {"item_name": item_name, "star": star, "releasetime": releasetime, "score": float(score), "rank": int(rank)}
+    map = {"item_name": item_name,
+           "star": star,
+           "releasetime": releasetime,
+           "score": float(score),
+           "rank": int(rank)
+           }
 
     return map
 
 
 def test0():
-    url = 'http://maoyan.com/board/4?offset=' + str(0 * 10)
-    html = get_one_page(url)
+    for i in range(10):
+        time.sleep(0.1)
 
-    html = BeautifulSoup(html, "lxml")
-    html = html.select("dd")
+        url = 'http://maoyan.com/board/4?offset=' + str(i * 10)
+        html = get_one_page(url)
 
-    for item in html:
-        map = parse_item(item)
-        print(map)
+        parse_one_page(html)
+
+    write_data_txt(data_list)
 
 
 if __name__ == '__main__':
