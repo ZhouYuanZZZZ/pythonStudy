@@ -2,8 +2,8 @@ import requests
 import re
 import time
 import os
+import mysql.connector
 from bs4 import BeautifulSoup
-
 
 releasetime_re = '(\d{4}-\d{2}-\d{2}){1}|(\d){4}'
 actors_re = '(主演：)(.+)'
@@ -29,6 +29,9 @@ def parse_one_page(html):
 
     for item in html:
         map = parse_item(item)
+
+        print(map)
+
         data_list.append(map)
 
 
@@ -44,8 +47,22 @@ def write_data_txt(datas):
 
 
 def write_data_mysql(datas):
+    connect = mysql.connector.connect(host='10.2.0.67', port=3306,
+                                      user='root', password='root',
+                                      database='python_test')
+
+    cursor = connect.cursor()
+
+    sql = '''insert into maoyan_top_100(item_name,stars,rank_position,score,issue_time)
+                values(%s,%s,%s,%s,%s)'''
     for item in datas:
-        print(0)
+        data = (item['item_name'], item['star'], item['rank'], item['score'], item['releasetime'])
+        cursor.execute(sql, data)
+
+    connect.commit()
+
+    cursor.close()
+    connect.close()
 
 
 def create_table():
@@ -99,6 +116,7 @@ def test0():
         parse_one_page(html)
 
     write_data_txt(data_list)
+    write_data_mysql(data_list)
 
 
 if __name__ == '__main__':
