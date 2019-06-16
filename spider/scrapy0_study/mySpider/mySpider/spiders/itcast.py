@@ -15,16 +15,12 @@ class ItcastSpider(scrapy.Spider):
         div_texts = html.select('div.tea_txt ul div.li_txt')
 
         for item in div_texts:
-
             h3 = item.select_one('h3').get_text().strip()
             h4 = item.select_one('h4').get_text().strip()
             p = item.select_one('p').get_text().strip()
 
-            print(h3)
-            print(h4)
-            print(p)
-            print('\n')
+            item_object = {'h3': h3, 'h4': h4, 'p': p}
 
-        print(len(div_texts))
+            yield item_object
 
     pass

@@ -89,3 +89,8 @@ LOG_LEVEL = 'WARNING'
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+ITEM_PIPELINES = {
+    # 'mySpider.pipelines.SomePipeline': 300,
+    "mySpider.pipelines.MyspiderPipeline": 300
+}
