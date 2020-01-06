@@ -1,38 +1,28 @@
-import urllib.request
-import urllib.error
-import urllib.parse
-import socket
+import requests
+import json
 
 
 def test0():
-    response = urllib.request.urlopen('https://www.baidu.com')
-    print(response.status)
-    print(response.getheaders())
-    print(response.getheader('Server'))
-    print(response.getheader('Content-Type'))
+    r = requests.post('https://httpbin.org/post', data={'key': 'value'})
+    print(r.status_code)
 
 
 def test1():
-    try:
-        data = bytes(urllib.parse.urlencode({'word': 'hello'}), encoding='utf-8')
-        response = urllib.request.urlopen('http://httpbin.org/post', data=data, timeout=0.1)
-        print(response.read().decode())
-    except urllib.error.URLError as e:
-        if isinstance(e.reason, socket.timeout):
-            print('time out')
+    r = requests.get('https://api.github.com/events')
+    print(r.text)
+    print(type(r.text))
+    print("------------")
+    print(r.content)
+    print(type(r.content))
 
 
 def test2():
-    url = 'http://httpbin.org/post'
-    headers = {
-        'User-Agent': 'Mozilla/4.0(compatible;MSIES.S;Windows NT)',
-        'Host': 'httpbin.org'
-    }
+    response = requests.get("http://www.baidu.com/")
+    cookiejar = response.cookies
+    cookiedict = requests.utils.dict_from_cookiejar(cookiejar)
 
-    data = bytes(urllib.parse.urlencode({'name': 'zy'}), encoding='utf8')
-    req = urllib.request.Request(url=url, data=data, headers=headers, method='POST')
-    response = urllib.request.urlopen(req)
-    print(response.read().decode())
+    print(cookiejar)
+    print(cookiedict)
 
 
-test2()
+test1()

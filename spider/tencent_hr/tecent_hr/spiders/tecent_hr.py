@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 class TecentHrSpider(scrapy.Spider):
     name = 'tecent_hr'
     allowed_domains = ['careers.tencent.com']
-    start_urls = ['http://careers.tencent.com/search.html?query=co_1&sc=1']
+    start_urls = ['https://careers.tencent.com/search.html']
 
     def parse(self, response):
         logger.info('parse start')
@@ -28,9 +28,9 @@ class TecentHrSpider(scrapy.Spider):
         # 找到下一页的url地址
         page_index = html.select('ul.page-list li.active span').item.get_text().strip()
         page_index = int(page_index)
-        next_url = 'http://careers.tencent.com/search.html?query=co_1&sc=1&index=' + page_index + 1;
+        next_url = 'https://careers.tencent.com/search.html?index=' + page_index;
 
-        if page_index != 407:
+        if page_index <= 479:
             yield scrapy.Request(
                 next_url,
                 callback=self.parse,
