@@ -1,10 +1,16 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+# WebDriverWait 库，负责循环等待
+from selenium.webdriver.support.ui import WebDriverWait
+# expected_conditions 类，负责条件出发
+from selenium.webdriver.support import expected_conditions as EC
 
-driver_path = r'/Applications/chromedriver'
+driver_path_mac = r'/Applications/chromedriver'
+driver_path_win = r'C:\develop\chromedriver.exe'
 
-driver = webdriver.Chrome(executable_path=driver_path)
+driver = webdriver.Chrome(executable_path=driver_path_win)
 driver.get("http://ics.chinasoftinc.com")
 driver.maximize_window()
 
@@ -39,23 +45,28 @@ ActionChains(driver).move_to_element(workflow).perform()
 
 # Click New Work
 driver.find_element_by_link_text("新建工作").click()
-driver.find_element_by_link_text("忘打卡申请").click()
 
 
-# Find iframe_page
-#Frame1 = driver.find_element_by_xpath('//*[@id="tabs-content"]/iframe[1]')
+frame1 = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//iframe[@src="/system/core/workflow/flowrun/createNewWork_HuaWei.jsp"]')))
 
 # switch to this frame
-# frame2 = driver.find_element_by_tag_name("iframe")
-# print(frame2)
+driver.switch_to.frame(frame1)
 
-#driver.switch_to.frame(Frame1)
 
-# click Forget_to_Punch_Card Application
-# driver.find_element_by_link_text("忘打卡申请").click()
-#driver.find_element_by_xpath('//*[@id="wf_list_12"]/li[2]/a').click()
+element1 = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "忘打卡申请"))
+    )
 
-print(Frame1.find_e)
+element2 = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "其他类人事证明申请"))
+    )
+
+ActionChains(driver).move_to_element(element2).perform()
+
+element1.click()
+
+
 
 
 
