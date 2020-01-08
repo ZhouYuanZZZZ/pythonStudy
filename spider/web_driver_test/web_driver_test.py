@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-driver_path = r'C:\develop\chromedriver.exe'
+driver_path = r'/Applications/chromedriver'
 
 
 def test0():
