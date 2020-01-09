@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 driver_path_mac = r'/Applications/chromedriver'
 driver_path_win = r'C:\develop\chromedriver.exe'
 
-driver = webdriver.Chrome(executable_path=driver_path_win)
+driver = webdriver.Chrome(executable_path=driver_path_mac)
 driver.get("http://ics.chinasoftinc.com")
 driver.maximize_window()
 
