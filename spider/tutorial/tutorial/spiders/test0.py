@@ -14,7 +14,7 @@ class Test0Spider(scrapy.Spider):
         html = etree.HTML(response.text)
         li_list = html.xpath('//*[@id="contains"]/div[3]/div[1]/div[2]/div[2]/div[1]/div[2]/div[2]/ul/li')
 
-        logger.info('li size:{}'.format(len(li_list)))
+        logger.info('parse start li size:{}'.format(len(li_list)))
 
         for item in li_list:
             name = item.xpath('./a/text()')[0]
@@ -28,10 +28,8 @@ class Test0Spider(scrapy.Spider):
 
             logger.info('{}-{}'.format(name,date))
 
+            tutorial_item = TutorialItem()
+            tutorial_item['name'] = name
+            tutorial_item['date'] = date
 
-            entity = TutorialItem()
-            entity['name'] = name
-            entity['date'] = date
-
-
-        return []
+            yield tutorial_item
