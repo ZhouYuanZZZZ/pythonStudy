@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for tecent_hr project
+# Scrapy settings for sun_selenium project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,17 +9,19 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'tecent_hr'
+BOT_NAME = 'sun_selenium'
 
-SPIDER_MODULES = ['tecent_hr.spiders']
-NEWSPIDER_MODULE = 'tecent_hr.spiders'
+SPIDER_MODULES = ['sun_selenium.spiders']
+NEWSPIDER_MODULE = 'sun_selenium.spiders'
+
+LOG_LEVEL = 'WARNING'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'tecent_hr (+http://www.yourdomain.com)'
+#USER_AGENT = 'sun_selenium (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = False
+ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -47,14 +49,14 @@ ROBOTSTXT_OBEY = False
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'tecent_hr.middlewares.TencentHrSpiderMiddleware': 543,
+#    'sun_selenium.middlewares.SunSeleniumSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'tecent_hr.middlewares.TencentHrDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    'sun_selenium.middlewares.SeleniumMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -62,16 +64,11 @@ ROBOTSTXT_OBEY = False
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 #}
 
-LOG_LEVEL = 'WARNING'
-
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'tecent_hr.spiders.tecent_hr.TecentHrSpider': 300,
+    'sun_selenium.pipelines.SunSeleniumPipeline': 300,
 }
-
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'
-
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

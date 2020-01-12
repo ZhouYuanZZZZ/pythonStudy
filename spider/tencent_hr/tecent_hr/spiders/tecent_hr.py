@@ -1,8 +1,8 @@
 import scrapy
-import logging
+from tecent_hr.logging_conf import logger
 from bs4 import BeautifulSoup
 
-logger = logging.getLogger(__name__)
+
 
 
 class TecentHrSpider(scrapy.Spider):
@@ -12,27 +12,18 @@ class TecentHrSpider(scrapy.Spider):
 
     def parse(self, response):
         logger.info('parse start')
+        logger.info(response.text)
+        items = response.xpath('/html/body/div/div[4]/div[3]/div[2]/div[2]/div/div[1]')
+        logger.info(items)
 
-        html = response.text
-        html = BeautifulSoup(html)
+        for item in items:
+            logger.info("---------------------")
+            title = item.xpath('./a/h4/text()').extract_first()
+            logger.info(title)
 
-        positions = html.select('div.recruit-list a h4')
 
-        for item in positions:
-            position_text = item.get_text().strip()
 
-            item_object = {'position_text', position_text}
 
-            yield item_object
 
-        # 找到下一页的url地址
-        page_index = html.select('ul.page-list li.active span').item.get_text().strip()
-        page_index = int(page_index)
-        next_url = 'https://careers.tencent.com/search.html?index=' + page_index;
 
-        if page_index <= 479:
-            yield scrapy.Request(
-                next_url,
-                callback=self.parse,
-                # meta = {"item":item}
-            )
+

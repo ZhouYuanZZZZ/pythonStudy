@@ -11,25 +11,15 @@ class Test0Spider(scrapy.Spider):
     start_urls = ['http://www.cma.gov.cn/2011xwzx/2011xqxxw/']
 
     def parse(self, response):
-        html = etree.HTML(response.text)
-        li_list = html.xpath('//*[@id="contains"]/div[3]/div[1]/div[2]/div[2]/div[1]/div[2]/div[2]/ul/li')
+        li_list = response.xpath('//*[@id="contains"]/div[3]/div[1]/div[2]/div[2]/div[1]/div[2]/div[2]/ul/li')
 
-        logger.info('parse start li size:{}'.format(len(li_list)))
+        logger.info('li size:{}'.format(len(li_list)))
 
         for item in li_list:
-            name = item.xpath('./a/text()')[0]
-            date = item.xpath('./span/text()')[0]
-
-            name = name.encode('utf-8')
-            date = date.encode('utf-8')
-
-            name = str(name, 'utf-8')
-            date = str(date, 'utf-8')
+            name = item.xpath('./a/text()').extract_first()
+            date = item.xpath('./span/text()').extract_first()
 
             logger.info('{}-{}'.format(name,date))
 
-            tutorial_item = TutorialItem()
-            tutorial_item['name'] = name
-            tutorial_item['date'] = date
 
-            yield tutorial_item
+        return []
