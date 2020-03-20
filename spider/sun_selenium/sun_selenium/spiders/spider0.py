@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-
 from sun_selenium.items import SunSeleniumItem
-from sun_selenium.logging_conf import logger
-
 
 class Spider0Spider(scrapy.Spider):
     name = 'spider0'
