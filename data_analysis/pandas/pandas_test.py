@@ -6,7 +6,7 @@ import matplotlib
 
 font = {
     'family': 'MicroSoft YaHei',
-    'size': 14
+    'size': 12
 }
 matplotlib.rc('font', **font)
 
@@ -96,6 +96,71 @@ def test3():
             actors_set.add(i)
     print('演员人数:{}'.format(len(actors_set)))
 
+    # 最大最小时长
+    time = t['Runtime (Minutes)']
+    print('最大时长:{}'.format(time.max()))
+    print('最小时长:{}'.format(time.min()))
+    print('最小值索引:{}'.format(time.argmin()))
+    print('最大值索引:{}'.format(time.argmax()))
 
 
-test3()
+def test4():
+    t = pd.read_csv("./IMDB-Movie-Data.csv")
+
+    temp_list = t['Genre'].str.split(',').to_list()  # [ ,[],[]]
+    # print(temp_list)
+
+    # 提取出所有分类
+    genre_set = set()
+    for i in temp_list:
+        for j in i:
+            genre_set.add(j)
+
+    # 构建统计表格
+    zeros_df = pd.DataFrame(np.zeros((t.shape[0], len(genre_set))), columns=list(genre_set))
+    # print(zeros_df)
+
+    # 每个电影出现分类的位置赋值1
+    for i in range(t.shape[0]):
+        zeros_df.loc[i, temp_list[i]] = 1
+
+    # 统计每个分类的电影的数量和
+    genre_count = zeros_df.sum(axis=0)
+
+    # 排序并绘图
+    genre_count = genre_count.sort_values()
+    x = genre_count.index
+    y = genre_count.values
+    plt.figure(figsize=(20, 8), dpi=80)
+    plt.bar(range(len(x)), y)
+    plt.xticks(range(len(x)), x, rotation=45)
+    plt.show()
+
+
+def test5():
+    df = pd.DataFrame([('bird', 'Falconiformes', 389.0),
+                       ('bird', 'Psittaciformes', 24.0),
+                       ('mammal', 'Carnivora', 80.2),
+                       ('mammal', 'Primates', np.nan),
+                       ('mammal', 'Carnivora', 58)],
+                      index=['falcon', 'parrot', 'lion', 'monkey', 'leopard'],
+                      columns=('class', 'order', 'max_speed'))
+
+    group0 = df.groupby('class')
+
+    print(group0.head(5))
+
+
+def test6():
+    df = pd.read_csv('./starbucks_store_worldwide.csv')
+    df = df[df['Country'] == 'CN']
+    group = df.groupby(by=['Country','State/Province'])
+    group = group['Brand']
+
+    group_count = group.count()
+    print(group_count)
+    print(type(group_count))
+
+
+
+test6()
